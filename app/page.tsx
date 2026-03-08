@@ -1,6 +1,7 @@
 "use client";
 
 import ProductCardComponent from "@/components/ProductCardComponent";
+import ProductCardSkeleton from "@/components/ProductCardSkeleton";
 import { searchProducts } from "@/lib/api";
 import { ProductCard } from "@/types/products";
 import { useInfiniteQuery } from "@tanstack/react-query";
@@ -14,7 +15,7 @@ export default function Home() {
 
   console.log("Search query:", searchQuery);
 
-  const { data, fetchNextPage, hasNextPage, status, isFetchingNextPage } = useInfiniteQuery({
+  const { data, fetchNextPage, hasNextPage, isLoading, isFetchingNextPage } = useInfiniteQuery({
     queryKey: ["search", searchQuery],
     queryFn: ({ pageParam = 1 }) => searchProducts({search: searchQuery}, pageParam),
     initialPageParam: 1,
@@ -55,14 +56,24 @@ export default function Home() {
 
   return (
     <>
-      {products && (
-        <ul>
-          {products.map((product: ProductCard) => (
+      <div>
+        <h3 className="text-2xl mb-4">{searchQuery ? `Search results for "${searchQuery}":` : "All Products"}</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {products?.map((product: ProductCard) => (
             <ProductCardComponent key={product.id} product={product} />
           ))}
-        </ul>
-      )}
-      {status === "pending" && <p>Loading...</p>}
+          {(isLoading || isFetchingNextPage) && 
+          <>
+            <ProductCardSkeleton />
+            <ProductCardSkeleton className="hidden sm:block" />
+            <ProductCardSkeleton className="hidden md:block" />
+            <ProductCardSkeleton className="hidden lg:block" />
+          </>}
+        </div>
+
+        {!products?.length && !isLoading && <p>No products found.</p>}
+        
+      </div>
       <div ref={loadMoreRef} className="h-10" />
     </>
   );
