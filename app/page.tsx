@@ -4,13 +4,19 @@ import ProductCardComponent from "@/components/ProductCardComponent";
 import { searchProducts } from "@/lib/api";
 import { ProductCard } from "@/types/products";
 import { useInfiniteQuery } from "@tanstack/react-query";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useRef } from "react";
 
 export default function Home() {
 
+  const searchParams = useSearchParams();
+  const searchQuery = searchParams.get("search") || "";
+
+  console.log("Search query:", searchQuery);
+
   const { data, fetchNextPage, hasNextPage, status, isFetchingNextPage } = useInfiniteQuery({
-    queryKey: ["search", ""],
-    queryFn: ({ pageParam = 1 }) => searchProducts({}, pageParam),
+    queryKey: ["search", searchQuery],
+    queryFn: ({ pageParam = 1 }) => searchProducts({search: searchQuery}, pageParam),
     initialPageParam: 1,
     getNextPageParam: (lastPage, pages) => {
       if (!lastPage.length) return undefined
