@@ -6,8 +6,8 @@ import { useQuery } from "@tanstack/react-query";
 export default function Home() {
 
   const { data, error, isLoading, isError } = useQuery({
-    queryKey: ["search", ""],
-    queryFn: () => searchProducts(""),
+    queryKey: ["search", {}],
+    queryFn: () => searchProducts({}),
   });
 
   return (
