@@ -1,5 +1,6 @@
 import { SearchParams } from "@/types/searchParams";
 import { DEFAULT_PAGE_SIZE, PRODUCT_CARD_FIELDS, PRODUCT_DETAIL_FIELDS, PRODUCT_ENDPOINT, SEARCH_ENDPOINT } from "./constants";
+import { sanitizeProductDetailData, sanitizeSearchData } from "./sanitize";
 
 
 const buildSearchUrl = (params: SearchParams, page: number) => {
@@ -27,11 +28,11 @@ export async function getProductByBarcode(barcode: string) {
     if (data.status === 0) {
         throw new Error(`Product with barcode ${barcode} not found`);
     }
-    return data;
+    return sanitizeProductDetailData(data);
 }
 
 export async function searchProducts(params: SearchParams, page: number = 1) {
     const res = await fetch(buildSearchUrl(params, page));
     const data = await res.json();
-    return data;
+    return sanitizeSearchData(data);
 }

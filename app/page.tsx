@@ -1,6 +1,8 @@
 "use client";
 
+import ProductCardComponent from "@/components/ProductCardComponent";
 import { searchProducts } from "@/lib/api";
+import { ProductCard } from "@/types/products";
 import { useQuery } from "@tanstack/react-query";
 
 export default function Home() {
@@ -17,8 +19,8 @@ export default function Home() {
       {isError && <p>Error: {error.message}</p>}
       {data && (
         <ul>
-          {data.products.map((product: any) => (
-            <li key={product.code}>{product.product_name}</li>
+          {data.map((product: ProductCard) => (
+            <ProductCardComponent key={product.id} product={product} />
           ))}
         </ul>
       )}

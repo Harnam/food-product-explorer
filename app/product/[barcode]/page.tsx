@@ -13,7 +13,7 @@ export default function ProductPage({ params }: { params: { barcode: string } })
             Product page for barcode: {params.barcode}
             {isLoading && <p>Loading...</p>}
             {isError && <p>Error: {error.message}</p>}
-            {data && <p>Product: {data.product_name}</p>}
+            {data && <p>Product: {data.name}</p>}
         </>
     );
 }
