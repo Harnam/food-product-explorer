@@ -5,5 +5,5 @@ export const PRODUCT_ENDPOINT = `${BASE_URL}/api/v0/product`;
 
 export const DEFAULT_PAGE_SIZE = 20;
 
-export const PRODUCT_CARD_FIELDS = "code,product_name,image_url,categories,nutrition_grade_fr,brands";
+export const PRODUCT_CARD_FIELDS = "code,product_name,image_small_url,image_url,categories,nutrition_grade_fr,brands";
 export const PRODUCT_DETAIL_FIELDS = "code,product_name,image_url,categories,nutrition_grade_fr,brands,ingredients_text,labels_tags,nutriments";

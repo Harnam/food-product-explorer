@@ -1,11 +1,13 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
-import { useRef } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useRef } from "react";
 
 export default function SearchBar() {
     const router = useRouter();
     const searchInputRef = useRef<HTMLInputElement>(null);
+
+    const searchParam = useSearchParams()
 
     const params = new URLSearchParams();
     const pathname = usePathname();
@@ -21,9 +23,19 @@ export default function SearchBar() {
             router.push(`/?search=${searchInputRef.current.value.trim()}`);
     }
 
+    useEffect(() => {
+        if(pathname == "/") {
+            const searchValue = searchParam.get("search");
+            searchInputRef.current!.value = searchValue || "";
+        } else {
+            searchInputRef.current!.value = "";
+        }
+    }, [pathname]); 
+
     return (
         <div className="p-4 flex flex-row w-full">
             <input
+                name="search"
                 ref={searchInputRef}
                 type="text"
                 placeholder="Search for products..."

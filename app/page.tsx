@@ -5,6 +5,7 @@ import ProductCardSkeleton from "@/components/ProductCardSkeleton";
 import { searchProducts } from "@/lib/api";
 import { ProductCard } from "@/types/products";
 import { useInfiniteQuery } from "@tanstack/react-query";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useRef } from "react";
 
@@ -56,25 +57,29 @@ export default function Home() {
 
   return (
     <>
-      <div>
-        <h3 className="text-2xl mb-4">{searchQuery ? `Search results for "${searchQuery}":` : "All Products"}</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {products?.map((product: ProductCard) => (
-            <ProductCardComponent key={product.id} product={product} />
-          ))}
-          {(isLoading || isFetchingNextPage) && 
-          <>
-            <ProductCardSkeleton />
-            <ProductCardSkeleton className="hidden sm:block" />
-            <ProductCardSkeleton className="hidden md:block" />
-            <ProductCardSkeleton className="hidden lg:block" />
-          </>}
+      <div className="container p-4 w-full flex flex-row gap-4 m-auto">
+        <div className="w-1/5 sticky h-max border rounded-lg p-4 hidden lg:block bg-[#ffeded] text-black">
+          Categories:
         </div>
+        <div className="flex-1">
+          <h3 className="text-2xl mb-4">{searchQuery ? `Search results for "${searchQuery}":` : "All Products"}</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 items-stretch">
+            {products?.map((product: ProductCard) => (
+                <ProductCardComponent key={product.id} product={product} />
+            ))}
+            {(isLoading || isFetchingNextPage) && 
+            <>
+              <ProductCardSkeleton />
+              <ProductCardSkeleton className="hidden sm:flex" />
+              <ProductCardSkeleton className="hidden md:flex" />
+              <ProductCardSkeleton className="hidden lg:flex" />
+            </>}
+          </div>
 
-        {!products?.length && !isLoading && <p>No products found.</p>}
-        
+          {!products?.length && !isLoading && <p>No products found.</p>}
+          <div ref={loadMoreRef} className="h-10" />
+        </div>
       </div>
-      <div ref={loadMoreRef} className="h-10" />
     </>
   );
 }
