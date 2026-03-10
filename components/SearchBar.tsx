@@ -87,7 +87,7 @@ export default function SearchBar({ open, setOpen }: Props) {
   return (
     <div
       ref={ref}
-      className={"flex items-center " + (open ? "w-full" : "w-max")}
+      className={"flex items-center ml-auto " + (open ? "w-full" : "md:w-full")}
     >
       {/* Mobile icon when closed */}
       {!open && (
