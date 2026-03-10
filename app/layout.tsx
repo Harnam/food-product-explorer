@@ -4,6 +4,7 @@ import "./globals.css";
 import QueryProvider from "@/providers/QueryClientProvider";
 import Navbar from "@/components/Navbar";
 import { CartProvider } from "@/providers/CartProvider";
+import { Suspense } from "react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,12 +31,15 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <Suspense>
         <QueryProvider>
             <CartProvider>
               <Navbar />
               <div className="pt-25">{children}</div>
             </CartProvider>
         </QueryProvider>
+        </Suspense>
+        
       </body>
     </html>
   );
