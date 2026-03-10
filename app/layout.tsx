@@ -33,7 +33,7 @@ export default function RootLayout({
         <QueryProvider>
             <CartProvider>
               <Navbar />
-              <div className="pt-30">{children}</div>
+              <div className="pt-25">{children}</div>
             </CartProvider>
         </QueryProvider>
       </body>

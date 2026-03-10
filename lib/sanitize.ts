@@ -22,9 +22,9 @@ export function sanitizeProductDetailData(data: any) : ProductDetail | null {
     return {
         id: product.code,
         name: product.product_name || "Unknown Product",
-        image: product.image_url || "public/placeholder.png",
+        image: product.image_small_url ?? product.image_url ?? "/placeholder.jpg",
         category: product.categories?.split(",")[0]?.trim(),
-        nutritionGrade: product.nutrition_grade_fr?.toUpperCase(),
+        nutritionGrade: /^[a-e]$/i.test(product.nutrition_grade_fr ?? "") ? product.nutrition_grade_fr.toUpperCase() : undefined,
         brands: product.brands || undefined,
         ingredients: product.ingredients_text || undefined,
         labels: product.labels_tags || undefined,
