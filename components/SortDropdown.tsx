@@ -21,7 +21,7 @@ export default function SortDropdown({ value, onChange }: Props) {
   const selected = options.find(o => o.value === value)?.label
 
   return (
-    <div className="relative w-48">
+    <div className="relative w-full">
 
       <button
         onClick={() => setOpen(!open)}

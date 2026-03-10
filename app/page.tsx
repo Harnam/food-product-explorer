@@ -1,11 +1,13 @@
 "use client";
 
+import OverlayComponent from "@/components/OverlayComponent";
 import ProductCardComponent from "@/components/ProductCardComponent";
 import ProductCardSkeleton from "@/components/ProductCardSkeleton";
 import SortDropdown from "@/components/SortDropdown";
 import { searchProducts } from "@/lib/api";
 import { ProductCard } from "@/types/products";
 import { useInfiniteQuery } from "@tanstack/react-query";
+import { SlidersHorizontal } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
@@ -17,10 +19,24 @@ export default function Home() {
   console.log("Search query:", searchQuery);
 
   const [sort, setSort] = useState<"default" | "name" | "grade">("default");
+  const [category, setCategory] = useState("All");
+
+  const [openFilters, setOpenFilters] = useState(false);
+
+  const categories = [
+    "All",
+    "Snacks",
+    "Beverages",
+    "Dairy",
+    "Breakfast",
+    "Sweets",
+    "Bakery",
+    "Fruits & Vegetables",
+  ]
 
   const { data, fetchNextPage, hasNextPage, isLoading, isFetchingNextPage } = useInfiniteQuery({
-    queryKey: ["search", searchQuery],
-    queryFn: ({ pageParam = 1 }) => searchProducts({search: searchQuery}, pageParam),
+    queryKey: ["search", searchQuery, category],
+    queryFn: ({ pageParam = 1 }) => searchProducts({search: searchQuery, category: (category == "All")?"":category}, pageParam),
     initialPageParam: 1,
     getNextPageParam: (lastPage, pages) => {
       if (!lastPage.length) return undefined
@@ -67,14 +83,40 @@ export default function Home() {
   return (
     <>
       <div className="container p-4 w-full flex flex-row gap-4 m-auto">
-        <div className="w-1/5 sticky h-max border rounded-lg p-4 hidden lg:block bg-[#ffeded] text-black">
-            <p>Sort By: </p>
+        <OverlayComponent open={openFilters} setOpen={setOpenFilters}>
+            <p className="mt-2 font-bold mb-2">Sort By: </p>
             <SortDropdown value={sort} onChange={(val) => { window.scrollTo({top: 0, behavior: "smooth"}); setSort(val); }} />
-          Categories:
-        </div>
+            <p className="mt-2 font-bold mb-2">Categories: </p>
+            {categories.map((cat) => (
+              <div
+                key={cat}
+                onClick={() => setCategory(cat)}
+                className={`px-3 py-1.5 rounded-md text-sm border transition my-0.5
+                  ${
+                    category === cat
+                      ? "bg-[#ffc8dd] text-white border-[#cdb4db]"
+                      : "bg-white hover:bg-gray-100"
+                  }`}
+              >
+                {cat}
+              </div>
+            ))}
+        </OverlayComponent>
+
         <div className="flex-1">
-          <h3 className="text-2xl mb-4">{searchQuery ? `Search results for "${searchQuery}":` : "All Products"}</h3>
-          <SortDropdown value={sort} onChange={(val) => setSort(val)} />
+          <div className="flex flex-row items-center justify-between">
+            <h3 className="text-2xl">{searchQuery ? `Search results for "${searchQuery}":` : "All Products"}</h3>
+            <button
+              onClick={() => setOpenFilters(true)}
+              className="flex items-center gap-2 px-3 py-2 border rounded-md text-sm font-medium
+              bg-white hover:bg-gray-100 transition"
+            >
+              <SlidersHorizontal size={16} />
+              Filters
+            </button>
+          </div>
+
+          <hr className="my-4"></hr>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 items-stretch">
             {products?.map((product: ProductCard) => (
                 <ProductCardComponent key={product.id} product={product} />
